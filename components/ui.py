@@ -106,7 +106,7 @@ def into_Main_Window():
     while Locate_Status() !=1:
         if Locate_Status() == 1:return
 
-def Single_Operation(media_path:str,media_name:str)->int:
+def Single_Operation(media_path:str,media_name:str,srt_path:str)->int:
     """
         单次操作
             
@@ -204,8 +204,8 @@ def Single_Operation(media_path:str,media_name:str)->int:
         if __name__ == "__main__":
             path = ""
         else:
-            path = "./components/tmp/"
-        with open(path+'.'.join(media_name.split(".")[:-1])+".srt", 'w', encoding='utf-8') as f:  f.write(simple_srt.tracks_to_srt_string(tracks))
+            path = srt_path
+        with open(os.path.join(path,'.'.join(media_name.split(".")[:-1])+".srt"), 'w', encoding='utf-8') as f:  f.write(simple_srt.tracks_to_srt_string(tracks))
 
     def delete_media():
         """
@@ -231,13 +231,14 @@ def Single_Operation(media_path:str,media_name:str)->int:
 
 def Multi_Video_Process(video_path:str=os.path.abspath(CONFIG["Video_Path"])):
     video_path = os.path.abspath(video_path)
+    srt_path = video_path
     media_list = [fn for fn in os.listdir(video_path) if any(fn.endswith(format) for format in ['.mp4','.avi','.mkv','.mov','.flv'])]
     for item in media_list:
         m4a_name = item.split('.')[0]+".m4a"
         subprocess.Popen(f'ffmpeg -y -i "{video_path}/{item}" -vn -codec copy "{video_path}/{m4a_name}"',shell=True,
             stderr=subprocess.DEVNULL,stdout=subprocess.DEVNULL).wait()
         os.system(f"echo Start Processing {m4a_name}")
-        result = Single_Operation(media_path=video_path,media_name=m4a_name)
+        result = Single_Operation(media_path=video_path,media_name=m4a_name, srt_path=srt_path)
         if result == 0: os.system(f"echo {m4a_name} Success")
         Restart_Client(True)
         if CONFIG["webhook"] : requests.post(CONFIG["webhook_url"],headers={"User-Agent":"JySrtParser"},json={"content":f"{m4a_name} Success","time":time.time()})
