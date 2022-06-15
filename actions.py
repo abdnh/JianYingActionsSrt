@@ -9,7 +9,10 @@ import components.ui as ui
 import components.video_Down as vd
 
 Start_Time = time.time()
-Config = json.loads(open("./Config.json","r",encoding="utf-8").read())
+try:
+    Config = json.loads(open("./Config.json","r",encoding="utf-8").read())
+except FileNotFoundError:
+    Config = {}
 
 def Start_Func(func):
     def deco(*args, **kwargs):
