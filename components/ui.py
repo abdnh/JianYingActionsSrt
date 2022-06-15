@@ -15,6 +15,7 @@ import keyboard
 import _thread
 import subprocess
 import requests
+import shutil
 
 global PROCESSING
 
@@ -229,14 +230,20 @@ def Single_Operation(media_path:str,media_name:str,srt_path:str)->int:
     Main_Window.SetTopmost(False) #释放置顶锁 
     return 0
 
+def get_exe_path(cmd: str) -> str:
+    path = shutil.which(cmd)
+    if not path:
+        path = f"./bin/{cmd}"
+    return path
+
+
 def Multi_Video_Process(video_path:str=os.path.abspath(CONFIG["Video_Path"])):
     video_path = os.path.abspath(video_path)
     srt_path = video_path
     media_list = [fn for fn in os.listdir(video_path) if any(fn.endswith(format) for format in ['.mp4','.avi','.mkv','.mov','.flv'])]
     for item in media_list:
         m4a_name = item.split('.')[0]+".m4a"
-        subprocess.Popen(f'ffmpeg -y -i "{video_path}/{item}" -vn -codec copy "{video_path}/{m4a_name}"',shell=True,
-            stderr=subprocess.DEVNULL,stdout=subprocess.DEVNULL).wait()
+        subprocess.run([get_exe_path('ffmpeg'), '-y', '-i', f'{video_path}/{item}', '-vn', '-codec', 'copy', f"{video_path}/{m4a_name}"], check=False)
         os.system(f"echo Start Processing {m4a_name}")
         result = Single_Operation(media_path=video_path,media_name=m4a_name, srt_path=srt_path)
         if result == 0: os.system(f"echo {m4a_name} Success")
