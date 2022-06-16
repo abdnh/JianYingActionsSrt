@@ -32,7 +32,13 @@ class Etcs:
     
     @Start_Func
     def Get_Paths(self):
-        whoami = os.popen("whoami").read().replace("\n","").split("\\")[1]
+        whoami, _ = subprocess.Popen(
+            "whoami",
+            encoding='utf-8',
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE).communicate()
+        whoami = whoami.replace("\n","").split("\\")[1]
         Base_Dir = "C:/Users/{}/AppData/Local/JianyingPro".format(whoami)
         Config["Base_Dir"] ,Config["JianYing_App_Path"]  = Base_Dir , '/'.join([Base_Dir,"Apps/JianyingPro.exe"])
 
