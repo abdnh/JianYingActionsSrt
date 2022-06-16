@@ -165,7 +165,7 @@ def Single_Operation(media_path:str,media_name:str,srt_path:str)->int:
         Content_Window_top = Media_Window.PaneControl(ClassName="DUIViewWndClassName",searchDepth=1).BoundingRectangle.top
         auto.Click(x=int(Title_x+Title_width*3/5),y=int((Title_bottom+Content_Window_top)/2),waitTime=CONFIG["Delay_Times"])#点击路径选择框
         auto.SendKeys(media_path)
-        auto.PressKey(13)#按下回车键
+        auto.PressKey(13, waitTime=CONFIG["Delay_Times"])#按下回车键
         Media_Window.PaneControl(searchDepth=1,foundIndex=classname_include(WindowObj=Media_Window,SubControlType="PaneControl",ClassName="ComboBox")).SendKeys(media_name)
         #点击文件筐输入
         #Media_Window.ButtonControl(searchDepth=1).Click()#打开媒体
@@ -214,7 +214,7 @@ def Single_Operation(media_path:str,media_name:str,srt_path:str)->int:
         """
         Media_Button.Click()
         auto.Click(x=Media_Item[0],y=Media_Item[1])
-        auto.PressKey(46)
+        auto.PressKey(46, waitTime=CONFIG["Delay_Times"])
         if Main_Window.WindowControl(searchDepth=1,foundIndex=classname_include(WindowObj=Main_Window,SubControlType="WindowControl",ClassName="VEToastWindow")).GroupControl(searchDepth=1).Exists(searchIntervalSeconds=0.5):
             Main_Window.WindowControl(searchDepth=1,foundIndex=classname_include(WindowObj=Main_Window,SubControlType="WindowControl",ClassName="VEToastWindow")).GroupControl(searchDepth=1).Click()#删除文件
 
