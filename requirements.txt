@@ -7,3 +7,4 @@ keyboard
 pytz
 PyQt6
 pyinstaller>=5,<6
+pyperclip

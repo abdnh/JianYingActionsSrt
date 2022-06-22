@@ -9,6 +9,8 @@
 """
 import uiautomation as auto
 from uiautomation.uiautomation import Control
+import pyautogui
+import pyperclip
 import time
 import os
 import keyboard
@@ -163,10 +165,17 @@ def Single_Operation(media_path:str,media_name:str,srt_path:str)->int:
         Title_width = Media_Window.TitleBarControl(searchDepth=1).BoundingRectangle.width()
         Title_bottom = Media_Window.TitleBarControl(searchDepth=1).BoundingRectangle.bottom
         Content_Window_top = Media_Window.PaneControl(ClassName="DUIViewWndClassName",searchDepth=1).BoundingRectangle.top
+        pyperclip.copy(media_path)
         auto.Click(x=int(Title_x+Title_width*3/5),y=int((Title_bottom+Content_Window_top)/2),waitTime=CONFIG["Delay_Times"])#点击路径选择框
-        auto.SendKeys(media_path)
+        pyautogui.hotkey("ctrl", "v")
         auto.PressKey(13, waitTime=CONFIG["Delay_Times"])#按下回车键
-        Media_Window.PaneControl(searchDepth=1,foundIndex=classname_include(WindowObj=Media_Window,SubControlType="PaneControl",ClassName="ComboBox")).SendKeys(media_name)
+
+        pyperclip.copy(media_name)
+        time.sleep(CONFIG["Delay_Times"])
+        control = Media_Window.PaneControl(searchDepth=1,foundIndex=classname_include(WindowObj=Media_Window,SubControlType="PaneControl",ClassName="ComboBox"))
+        control.SetFocus()
+        pyautogui.hotkey("ctrl", "v")
+
         #点击文件筐输入
         #Media_Window.ButtonControl(searchDepth=1).Click()#打开媒体
         #auto.SendKeys("{Alt}O",waitTime=CONFIG["Delay_Times"])#按下回车键
