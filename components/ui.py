@@ -59,15 +59,23 @@ def classname_include(WindowObj:Control,SubControlType:str,ClassName:str="",Name
     """
     if ClassName == "" and Name == "":
         return -2
-    index_Found = 1
-    for UnkownObj in WindowObj.GetChildren():
-        if UnkownObj.ControlTypeName == SubControlType:
-            if (ClassName in UnkownObj.ClassName and ClassName!="") or (Name in UnkownObj.Name and Name!=""):
-                return index_Found
-            index_Found += 1
+    waitTime = CONFIG["Delay_Times"]
+    startTime = time.time()
+    while True:
+        index_Found = 1
+        for UnkownObj in WindowObj.GetChildren():
+            try:
+                if UnkownObj.ControlTypeName == SubControlType:
+                    if (ClassName in UnkownObj.ClassName and ClassName!="") or (Name in UnkownObj.Name and Name!=""):
+                        return index_Found
+                    index_Found += 1
+            except:
+                continue
+        if time.time() - startTime > waitTime:
+            break
     return 0
 
-def Locate_Status(timeout_seconds:int=0.5):
+def Locate_Status(timeout_seconds:int=CONFIG["Delay_Times"]):
     """
         确定现在的状态
             -1: 未启动剪映客户端
@@ -188,7 +196,7 @@ def Single_Operation(media_path:str,media_name:str,srt_path:str)->int:
         """
             尝试识别字幕
         """
-        Text_Button.Click()
+        Text_Button.Click(waitTime=CONFIG["Delay_Times"])
         #点击默认的新建文本以收回默认展开
         if classname_include(WindowObj=Top_Half_Window,SubControlType="TextControl",Name="收藏"):
             Top_Half_Window.TextControl(searchDepth=1,foundIndex=classname_include(WindowObj=Top_Half_Window,SubControlType="TextControl",Name="新建文本")).Click()
