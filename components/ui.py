@@ -260,8 +260,9 @@ def Multi_Video_Process(video_path:str=os.path.abspath(CONFIG["Video_Path"])):
     media_list = [fn for fn in os.listdir(video_path) if any(fn.endswith(format) for format in ['.mp4','.avi','.mkv','.mov','.flv'])]
     for item in media_list:
         m4a_name = item.split('.')[0]+".m4a"
-        subprocess.run([get_exe_path('ffmpeg'), '-y', '-i', f'{video_path}/{item}', '-vn', '-codec', 'copy', f"{video_path}/{m4a_name}"], check=False)
         os.system(f"echo Start Processing {m4a_name}")
+        if not os.path.exists(f"{video_path}/{m4a_name}"):
+            subprocess.run([get_exe_path('ffmpeg'), '-y', '-i', f'{video_path}/{item}', '-vn', '-codec', 'copy', f"{video_path}/{m4a_name}"], check=False)
         result = Single_Operation(media_path=video_path,media_name=m4a_name, srt_path=srt_path)
         if result == 0: os.system(f"echo {m4a_name} Success")
         Restart_Client(True)
