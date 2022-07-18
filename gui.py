@@ -35,7 +35,12 @@ class Dialog(QDialog):
         Actions().Took_Draft_Content_Path()
         ui.CONFIG["draft_content_directory"] = Config["Draft_Content_Json"]
         ui.CONFIG["JianYing_Exe_Path"] = Config["JianYing_App_Path"]
-        ui.Multi_Video_Process(video_path=srcidr)
+        while True:
+            try:
+                ui.Multi_Video_Process(video_path=srcidr)
+                break
+            except:
+                pass
         self.status_label.setText("Done!")
 
 
